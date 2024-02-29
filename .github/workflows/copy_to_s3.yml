@@ -1,5 +1,5 @@
 # .github/workflows/copy_to_s3.yml
-name: Deploy to AWS Lambda
+name: Deploy to AWS S3
 on:
   workflow_call:
     inputs:
