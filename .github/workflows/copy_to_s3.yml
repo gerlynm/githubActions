@@ -35,4 +35,4 @@ jobs:
         npm i
     - name: Deploy to S3
       run: |
-        aws s3 . public/ s3://${{ inputs.s3_bucket_name  }} --recursive --quiet
+        aws s3 . s3://${{ inputs.s3_bucket_name  }} --recursive --quiet
