@@ -3,7 +3,10 @@ name: Deploy to AWS S3
 on:
   workflow_call:
     inputs:
-      lambda_function_name:
+      aws_key:
+        required: true
+        type: string
+      aws_secret_key:
         required: true
         type: string
       s3_bucket_name:
@@ -20,9 +23,9 @@ jobs:
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
-        aws-access-key-id: ${{ secrets.AWS_KEY_CN }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY_CN }}
-        aws-region: us-east-1
+        aws-access-key-id: ${{ inputs.aws_key }}
+        aws-secret-access-key: ${{ inputs.aws_secret_key }}
+        aws-region: ${{ inputs.aws_region }}
     - name: set node version to 16.17.0
       uses: actions/setup-node@v3
       with:
@@ -30,22 +33,6 @@ jobs:
     - name: npm Install
       run: |
         npm i
-    - name: env file fix
-      run: |
-        #rm .env
-        cp stage.env .env
-    - name: run build
-      run: |
-        CI=false npm run build:dev
-        ls dist
     - name: Deploy to S3
       run: |
-        aws s3 rm s3://${{ secrets.S3_BUCKET_BETA }} --recursive --quiet
-        aws s3 cp public/ s3://${{ secrets.S3_BUCKET_BETA  }} --recursive --quiet
-        aws s3 cp dist/ s3://${{ secrets.S3_BUCKET_BETA  }} --recursive --quiet
-              
-    - name: invalidate cloudfront
-      run: |
-        AWS_INVALIDATION_ID=$(aws cloudfront create-invalidation --distribution-id ${{ secrets.HOST_CLOUDFRONT_BETA }} --paths '/*' --query 'Invalidation.Id' --output text)
-        aws cloudfront wait invalidation-completed --distribution-id ${{ secrets.HOST_CLOUDFRONT_BETA }} --id $AWS_INVALIDATION_ID
-
+        aws s3 . public/ s3://${{ inputs.s3_bucket_name  }} --recursive --quiet
