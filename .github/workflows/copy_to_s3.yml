@@ -2,15 +2,16 @@
 name: Deploy to AWS S3
 on:
   workflow_call:
-    secrets:
-      aws_key:
-        required: true
-      aws_secret_key:
-        required: true
-      s3_bucket_name:
-        required: true
-      aws_region:
-        required: true
+    # secrets:
+    #   aws_key:
+    #     required: true
+    #   aws_secret_key:
+    #     required: true
+    #   s3_bucket_name:
+    #     required: true
+    #   aws_region:
+    #     required: true
+    
 jobs:
   build:
     runs-on: ubuntu-latest
