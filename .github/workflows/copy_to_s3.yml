@@ -2,19 +2,15 @@
 name: Deploy to AWS S3
 on:
   workflow_call:
-    inputs:
+    secrets:
       aws_key:
         required: true
-        type: string
       aws_secret_key:
         required: true
-        type: string
       s3_bucket_name:
         required: true
-        type: string
       aws_region:
         required: true
-        type: string
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -23,9 +19,9 @@ jobs:
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
-        aws-access-key-id: ${{ inputs.aws_key }}
-        aws-secret-access-key: ${{ inputs.aws_secret_key }}
-        aws-region: ${{ inputs.aws_region }}
+        aws-access-key-id: ${{ secrets.aws_key }}
+        aws-secret-access-key: ${{ secrets.aws_secret_key }}
+        aws-region: ${{ secrets.aws_region }}
     - name: set node version to 16.17.0
       uses: actions/setup-node@v3
       with:
@@ -35,4 +31,4 @@ jobs:
         npm i
     - name: Deploy to S3
       run: |
-        aws s3 cp static/ s3://${{ inputs.s3_bucket_name  }} --recursive --quiet
+        aws s3 cp static/ s3://${{ secrets.s3_bucket_name  }} --recursive --quiet
