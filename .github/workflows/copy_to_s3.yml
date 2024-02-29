@@ -1,9 +1,17 @@
-name: Build Beta
+# .github/workflows/copy_to_s3.yml
+name: Deploy to AWS Lambda
 on:
-  push:
-    branches:
-      - stage
-  workflow_dispatch:
+  workflow_call:
+    inputs:
+      lambda_function_name:
+        required: true
+        type: string
+      s3_bucket_name:
+        required: true
+        type: string
+      aws_region:
+        required: true
+        type: string
 jobs:
   build:
     runs-on: ubuntu-latest
